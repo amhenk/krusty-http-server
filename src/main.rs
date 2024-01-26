@@ -17,10 +17,12 @@ struct Request {
     method: RequestMethod,
 }
 
+const DEFAULT_REQUEST_BUFFER_SIZE: usize = 4096;
+
 fn parse_request(mut stream: TcpStream) {
     println!("parsing request...");
 
-    let mut request_buffer = [0; 4096];
+    let mut request_buffer = [0; DEFAULT_REQUEST_BUFFER_SIZE];
     let raw_request: String;
     match stream.read(&mut request_buffer[..]) {
         Err(why) => panic!("couldn't read stream!!!\n{}\n", why),
@@ -56,6 +58,7 @@ fn write_response(mut stream: TcpStream) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => (), // print!("{} contains:\n{}", display, s),
     }
+    // EVERYTHING IS FINE
     let _ = stream.write(b"HTTP/1.1 200\n");
     let _ = stream.write(b"Content-Type: text/html\n\n");
 
